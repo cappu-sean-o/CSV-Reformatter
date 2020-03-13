@@ -31,7 +31,7 @@ def parse_csv(path_to_file):
         #detect and parse overall account data into the first dictionary
         if len(separated_values) == 2:
             csv_lst_new[0][separated_values[0]] = separated_values[1][:-1]
-        
+
         #parse first row of real csv data as headers and puts it into header_lst variable
         elif len(separated_values) > 2 and len(header_lst) == 0:
             for i in separated_values:
@@ -39,14 +39,14 @@ def parse_csv(path_to_file):
                     header_lst.append(i[:-1])
                 else:
                     header_lst.append(i)
-        
+
         #parse subsequent rows of csv data and appends it as a dictionary using known headers
         elif len(separated_values) > 2 and len(header_lst) > 0:
             temp_dict = {}
             for i in range(len(header_lst)):
                 temp_dict[header_lst[i]] = separated_values[i]
             csv_lst_new.append(temp_dict)
-    
+
     return csv_lst_new
 
 #Main function
@@ -79,7 +79,7 @@ def main():
     #input data order : Transaction Date,Reference,Debit Amount,Credit Amount,Transaction Ref1,Transaction Ref2,Transaction Ref3
     #output data order: Expense,Location,Debit Amount,Credit Amount,Date,Category,Transaction Type,Comment
     for i in range(1,len(csv_lst),1):
-        
+
         #Initialise empty template
         temp_lst = ['','','','','','','','']
 
@@ -89,12 +89,12 @@ def main():
 
         #Parse dates of transactions and References
         if csv_lst[i]['Reference'] == 'UMC-' or csv_lst[i]['Reference'] == 'UMC-S': # For UMC Transactions
-            
+
             #UMC transactions have their real transaction dates written in the references
             temp_lst[header_output['Date']] = csv_lst[i]['Transaction Ref1'][-5:-3]+' '+csv_lst[i]['Transaction Ref1'][-3:-2]+csv_lst[i]['Transaction Ref1'][-2:].lower()
-            
+
             #Detect new year rollover of months when parsing dates
-            if temp_lst[header_output['Date']][-3:] == 'Dec' and csv_lst[i]['Transaction Date'][3:6] == 'Jan': 
+            if temp_lst[header_output['Date']][-3:] == 'Dec' and csv_lst[i]['Transaction Date'][3:6] == 'Jan':
                 temp_lst[header_output['Date']] += ' '+str(int(csv_lst[i]['Transaction Date'][-4:])-1)
             else:
                 temp_lst[header_output['Date']] += ' '+csv_lst[i]['Transaction Date'][-4:]
@@ -107,14 +107,14 @@ def main():
                 for j in range(1,len(csv_lst[i]['Transaction Ref1'][:-11].split('-'))-1,1):
                     temp_lst[header_output['Expense']] += '-' + csv_lst[i]['Transaction Ref1'][:-11].split('-')[j]
                 temp_lst[header_output['Location']] = csv_lst[i]['Transaction Ref1'][:-11].split('-')[-1]
-            
+
             #Remove Whitespace
             temp_lst[header_output['Expense']] = temp_lst[header_output['Expense']].strip()
             temp_lst[header_output['Location']] = temp_lst[header_output['Location']].strip()
 
             #Parse in Transaction Type
             temp_lst[header_output['Transaction Type']] = 'Debit/Credit Card'
-        
+
         else: #For non UMC transactions
 
             # Non UMC transactions are logged immediately so the dates simply carry over
@@ -141,7 +141,7 @@ def main():
                         temp_lst[header_output['Comment']] = csv_lst[i]['Transaction Ref3'][5:]
                 else:
                     temp_lst[header_output['Expense']] = csv_lst[i]['Transaction Ref1'] + ' ' + csv_lst[i]['Transaction Ref2']
-            
+
             #Parse Transaction Reference for PayLah
             if csv_lst[i]['Reference'] == 'ITR':
                 if 'MAXED OUT FROM PAYLAH! :' in csv_lst[i]['Transaction Ref1']:
@@ -154,11 +154,11 @@ def main():
             #Parse Transaction Reference for CAM
             if csv_lst[i]['Reference'] == 'CAM':
                 temp_lst[header_output['Expense']] = csv_lst[i]['Transaction Ref2']
-            
+
             #Parse Transaction Reference for IBG
             if csv_lst[i]['Reference'] == 'IBG':
                 temp_lst[header_output['Expense']] = csv_lst[i]['Transaction Ref1'] + ' ' + csv_lst[i]['Transaction Ref2']
-            
+
             #Parse Transaction Reference for INT
             if csv_lst[i]['Reference'] == 'INT':
                 temp_lst[header_output['Expense']] = 'Bank Interest'
@@ -201,4 +201,5 @@ def main():
     new_file.close()
     return None
 
-main()
+if __name__ == "__main__":
+    main()
