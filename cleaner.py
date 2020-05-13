@@ -167,6 +167,7 @@ def main():
             new_csv_lst.append(temp_lst)
 
     for i in new_csv_lst:
+        print(i)
         for j in keyword_dictionary['Location']:
             if j[0] in i[header_output['Expense']] and i[header_output['Location']] == '':
                 i[header_output['Location']] = j[1]
