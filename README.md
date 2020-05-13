@@ -10,4 +10,4 @@ Transaction Codes are referenced from https://www.dbs.com.sg/personal/support/ba
 Currently the main() function contains most of the code and is rather long and chunky. I intend to separate it out into their own functions in order to make the code cleaner and easier to understand as well as debug and code
 
 2. **Reduce the amount of hard coded bits**  
-Hopefully in the future this can be a general use CSV reformatter and maybe even produce other types of ouput other than CSV
+Hopefully in the future this can be a general use CSV reformatter and maybe even produce other types of output other than CSV
